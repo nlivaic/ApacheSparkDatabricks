@@ -33,15 +33,37 @@
 * Stages are physical units of execution.
 * So, to sum up: when you programatically access `SparkContext` and run queries in your code, `SparkContext` running within your Driver Program will in turn talk to Cluster Manager and it will in turn talk to each Worker and each Worker will in turn spin up executors to run processing.
 
+# Data structures and execution
 
 ## RDDs (Resilient Distributed Datasets)
 
-* All operations in Spark are performed on in-memory objects. These are called RDDs.
+* All operations in Spark are performed on in-memory objects for performance reasons. These are called RDDs.
 * RDD is a collection of entities (rows or records).
 * RDD is a basic data structure.
 * Characteristics:
     * Partitioned - split across nodes in a cluster
     * Immutable - once created cannot be changed. To make a change a new RDD has to be created through transformations.
     * Resilient - can be reconstructed on a node crash.
-* Even though RDD is split across nodes, we can access using a single variable.
+* Even though RDD is split across nodes, we can access it using a single variable.
 * Aren't used directly in Spark 3 anymore, but are still the main building block.
+
+## Transformations, Actions, Lazy Evaluation
+
+* Transformations transform input RDDs into another RDDs.
+* Action requests a result to a file or a console window.
+* RDDS report lazy evaluation. As we request transformations, Spark keeps a record of transformations - these transformations are applied in one go only when user requests a result.
+* This record of transformations is called __lineage__. This allows Spark to reconstruct RDDs in case of a crash.
+
+## Spark APIs
+
+![Spark APIs](https://github.com/nlivaic/ApacheSparkDatabricks/assets/26722936/1b9f1edb-97b9-47be-ad29-f77c5786cd43)
+* Two levels of APIs are marked on above image:
+    * Low-level APIs working with RDDs. We won't be working with these.
+    * High-level APIs working with Datasets and DataFrames.
+* Datasets are type safe, don't have named columns and are accessible only within type safe languages. As we will be working only with Python these are of no interest to us.
+
+## DataFrames
+
+* Built on top of RDDs. All the characteristics of RDDs apply to DataFrames as well.
+* This is what we will be working with most of the time.
+* We can query a dataframe using SQL.
